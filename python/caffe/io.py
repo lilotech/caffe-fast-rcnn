@@ -2,6 +2,8 @@ import numpy as np
 import skimage.io
 from scipy.ndimage import zoom
 from skimage.transform import resize
+import time
+import cv2
 
 try:
     # Python3 will most likely not be able to load protobuf
@@ -318,9 +320,14 @@ def resize_image(im, new_dims, interp_order=1):
         if im_max > im_min:
             # skimage is fast but only understands {1,3} channel images
             # in [0, 1].
-            im_std = (im - im_min) / (im_max - im_min)
-            resized_std = resize(im_std, new_dims, order=interp_order)
-            resized_im = resized_std * (im_max - im_min) + im_min
+            #start = time.time()
+            #im_std = (im - im_min) / (im_max - im_min)
+            #resized_std = resize(im_std, new_dims, order=interp_order)
+            #resized_im = resized_std * (im_max - im_min) + im_min
+            resized_im = cv2.resize(im, new_dims)
+
+            #print("resize in %.4f s." % (time.time() - start))
+
         else:
             # the image is a constant -- avoid divide by 0
             ret = np.empty((new_dims[0], new_dims[1], im.shape[-1]),
