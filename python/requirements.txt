@@ -15,3 +15,7 @@ python-gflags>=2.0
 pyyaml>=3.10
 Pillow>=2.3.0
 six>=1.1.0
+tornado>=4.3
+Flask>0.10.1
+easydic>=1.6
+ramona>=1.0.0
