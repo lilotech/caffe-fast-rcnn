@@ -293,14 +293,19 @@ def load_image(filename, color=True):
         of size (H x W x 3) in RGB or
         of size (H x W x 1) in grayscale.
     """
-    img = skimage.img_as_float(skimage.io.imread(filename, as_grey=not color)).astype(np.float32)
+    flg = 3
+    if not color:
+	flg = 0
+    img = cv2.imread(filename, flg) / 255.
+
+    #img = skimage.img_as_float(skimage.io.imread(filename, as_grey=not color)).astype(np.float32)
     if img.ndim == 2:
         img = img[:, :, np.newaxis]
-        if color:
-            img = np.tile(img, (1, 1, 3))
-    elif img.shape[2] == 4:
-        img = img[:, :, :3]
-    return img
+    #    if color:
+    #        img = np.tile(img, (1, 1, 3))
+    #elif img.shape[2] == 4:
+    #    img = img[:, :, :3]
+    return img[:, :, (2, 1, 0)]
 
 
 def resize_image(im, new_dims, interp_order=1):
@@ -317,25 +322,27 @@ def resize_image(im, new_dims, interp_order=1):
     -------
     im : resized ndarray with shape (new_dims[0], new_dims[1], K)
     """
-    if im.shape[-1] == 1 or im.shape[-1] == 3:
-        im_min, im_max = im.min(), im.max()
-        if im_max > im_min:
+    return cv2.resize(im, new_dims)
+
+   # if im.shape[-1] == 1 or im.shape[-1] == 3:
+   #     im_min, im_max = im.min(), im.max()
+   #     if im_max > im_min:
             # skimage is fast but only understands {1,3} channel images
             # in [0, 1].
-            im_std = (im - im_min) / (im_max - im_min)
-            resized_std = resize(im_std, new_dims, order=interp_order)
-            resized_im = resized_std * (im_max - im_min) + im_min
-        else:
+   #         im_std = (im - im_min) / (im_max - im_min)
+   #         resized_std = resize(im_std, new_dims, order=interp_order)
+   #         resized_im = resized_std * (im_max - im_min) + im_min
+   #     else:
             # the image is a constant -- avoid divide by 0
-            ret = np.empty((new_dims[0], new_dims[1], im.shape[-1]),
-                           dtype=np.float32)
-            ret.fill(im_min)
-            return ret
-    else:
+   #         ret = np.empty((new_dims[0], new_dims[1], im.shape[-1]),
+   #                        dtype=np.float32)
+   #         ret.fill(im_min)
+   #         return ret
+   # else:
         # ndimage interpolates anything but more slowly.
-        scale = tuple(np.array(new_dims, dtype=float) / np.array(im.shape[:2]))
-        resized_im = zoom(im, scale + (1,), order=interp_order)
-    return resized_im.astype(np.float32)
+   #     scale = tuple(np.array(new_dims, dtype=float) / np.array(im.shape[:2]))
+   #     resized_im = zoom(im, scale + (1,), order=interp_order)
+   # return resized_im.astype(np.float32)
 
 
 def oversample(images, crop_dims):
