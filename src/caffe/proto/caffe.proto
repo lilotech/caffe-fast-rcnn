@@ -1062,7 +1062,6 @@ message ReshapeParameter {
   optional int32 num_axes = 3 [default = -1];
 }
 
-<<<<<<< HEAD
 // Message that stores parameters used by ROIPoolingLayer
 message ROIPoolingParameter {
   // Pad, kernel size, and stride are all given as a single value for equal
@@ -1072,7 +1071,8 @@ message ROIPoolingParameter {
   // Multiplicative spatial scale factor to translate ROI coords from their
   // input scale to the scale used when pooling
   optional float spatial_scale = 3 [default = 1];
-=======
+}
+
 message ScaleParameter {
   // The first axis of bottom[0] (the first input Blob) along which to apply
   // bottom[1] (the second input Blob).  May be negative to index from the end
@@ -1108,7 +1108,6 @@ message ScaleParameter {
   // may be more efficient).  Initialized with bias_filler (defaults to 0).
   optional bool bias_term = 4 [default = false];
   optional FillerParameter bias_filler = 5;
->>>>>>> caffe/master
 }
 
 message SigmoidParameter {
